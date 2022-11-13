@@ -23,6 +23,26 @@ protected:
         }
     }
 
+    void u_postorder(BinarytreeNode<Data>* Node)
+    {
+        if(Node != NULL)
+        {
+            u_postorder(Node->left);
+            u_postorder(Node->right);
+            std::cout << Node->data << " ";
+        }
+    }
+
+    void u_preorder(BinarytreeNode<Data>* Node)
+    {
+        if(Node != NULL)
+        {
+            std::cout << Node->data << std::endl;
+            u_preorder(Node->left);
+            u_preorder(Node->right);
+        }
+    }
+
     void u_insert(const Data& UserData)
     {
         BinarytreeNode<Data>* NewNode;
@@ -79,6 +99,14 @@ public:
     void InOrder()
     {
         u_inorder(root);
+    }
+    void PostOrder()
+    {
+        u_postorder(root);
+    }
+    void PreOrder()
+    {
+        u_preorder(root);
     }
     void Insert(Data UserData)
     {

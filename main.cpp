@@ -1,8 +1,24 @@
 #include<iostream>
 #include<chrono>
 #include<ctime>
+#include<string>
+
 #include "BinaryTree.h"
 
+struct Cities
+{
+    std::string Name;
+    uint32_t population;
+
+    bool operator>(const Cities& other)
+    {
+        return Name > other.Name;
+    }
+    bool operator==(const Cities& other)
+    {
+        return Name == other.Name;
+    }
+};
 int main()
 {
     
@@ -24,8 +40,13 @@ int main()
     BinaryTree_u.InOrder();
 
     std::cout << "Tree Height = " << BinaryTree_v.Height() << std::endl;
-    auto end = std::chrono::system_clock::now();
+    
 
+    BinaryTree<Cities> BinaryCities;
+    BinaryCities.Insert({"kalol", 500000});
+    BinaryCities.Insert({"Ahmedabad", 3000000});
+
+    auto end = std::chrono::system_clock::now();
     std::cout << std::endl;
     std::chrono::duration<double , std::milli> time = end - start;
     std::cout << time.count() << " ms" << std::endl;

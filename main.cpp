@@ -5,6 +5,31 @@
 
 #include "BinaryTree.h"
 
+// void* operator new(size_t size)
+// {
+//     static int count = 0;
+//     count++;
+//     std::cout << count << " " << "Allocations" << std::endl;
+//     void * p = malloc(size);
+//     return p;
+// }
+
+class Timer
+{
+    public:
+        Timer()
+        {
+            start = std::chrono::system_clock::now();
+        }
+        ~Timer()
+        {
+            end = std::chrono::system_clock::now();
+            std::chrono::duration<double , std::milli> Duration = end - start;
+            std::cout << Duration.count() << " ms" << std::endl;
+        }
+    public:
+        std::chrono::time_point<std::chrono::system_clock> start , end;
+};
 struct Cities
 {
     std::string Name;
@@ -21,35 +46,14 @@ struct Cities
 };
 int main()
 {
-    
-    auto start = std::chrono::system_clock::now(); 
-    int Arr[] = {1,2,12,3,5,23,32,45,22,21};
-    size_t size = sizeof(Arr)/sizeof(Arr[0]);
-
+    Timer timer; 
     BinaryTree<int> BinaryTree_v;
-    BinaryTree<int> BinaryTree_u;
 
     std::cout << "First Binary Search Tree" << std::endl;
     BinaryTree_v.Insert(27);
-    //BinaryTree_v.Insert(Arr,size);
     BinaryTree_v.Insert({1,2,3,4,32});
-    BinaryTree_v.InOrder();
+    auto Number = BinaryTree_v.Search(32);
+    std::cout << Number->data << std::endl;
 
-    std::cout << "Second Binary Search Tree" << std::endl;
-    BinaryTree_u = BinaryTree_v;
-    BinaryTree_u.InOrder();
-
-    std::cout << "Tree Height = " << BinaryTree_v.Height() << std::endl;
-    
-
-    BinaryTree<Cities> BinaryCities;
-    BinaryCities.Insert({"kalol", 500000});
-    BinaryCities.Insert({"Ahmedabad", 3000000});
-
-    auto end = std::chrono::system_clock::now();
-    std::cout << std::endl;
-    std::chrono::duration<double , std::milli> time = end - start;
-    std::cout << time.count() << " ms" << std::endl;
-
-
+ 
 }

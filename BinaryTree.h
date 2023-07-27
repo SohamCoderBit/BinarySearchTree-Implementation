@@ -1,21 +1,21 @@
 #pragma once
 
 #include <initializer_list>
+#include <assert.h>
 
 
 template<typename Data>
-class BinarytreeNode
+struct BinarytreeNode
 {
-public:
     Data data;
-    BinarytreeNode* right;
-    BinarytreeNode* left;
+    BinarytreeNode* right = nullptr;
+    BinarytreeNode* left = nullptr;
 };
 
-template<typename Data>
+template<typename Data , typename Compare = std::greater<Data>>
 class BinaryTree
 {
-protected:
+private:
     BinarytreeNode<Data>* root;
     void u_inorder(BinarytreeNode<Data>* Node) const
     {
@@ -58,7 +58,23 @@ protected:
         }
     }
 
-    void u_insert(const Data& UserData)
+    BinarytreeNode<Data>* u_search(const Data& Key)
+    {
+        BinarytreeNode<Data>* Temp = root;
+        while(Temp != nullptr)
+        {
+            if(Key > Temp->data)
+                Temp = Temp->right;
+            else if(Key < Temp->data)
+                Temp = Temp->left;
+            else
+                return Temp; 
+        }
+        return nullptr;
+
+    }
+
+    void u_insert(const Data& UserData , Compare comparator = Compare())
     {
         BinarytreeNode<Data>* NewNode;
         BinarytreeNode<Data>* Current;
@@ -79,72 +95,77 @@ protected:
             while (Current != NULL)
             {
                 PreviousCurrent = Current;
-                if(Current->data == UserData)
+                if (!comparator(Current->data, UserData) && !comparator(UserData, Current->data)) 
                 {
                     std::cout << "There is Data Which is going To match this one " << std::endl;
                     return;
                 }
-                else if(Current->data > UserData)
+                else if (comparator(Current->data, UserData)) 
                 {
-                    Current=Current->left;
-                }
+                    Current = Current->left;
+                } 
                 else 
                 {
-                    Current=Current->right;
+                    Current = Current->right;
                 }
             }
 
-            if(PreviousCurrent->data > UserData)
+            if (comparator(PreviousCurrent->data, UserData)) 
             {
                 PreviousCurrent->left = NewNode;
-            }
-            else
+            } 
+            else 
             {
                 PreviousCurrent->right = NewNode;
             }
-            
         }
     }
 
-public:
-    BinaryTree()
+    void delete_tree(const BinarytreeNode<Data>* Tree)
     {
-        root = NULL;
+        if(Tree == nullptr)
+        {
+            return;
+        }
+        delete_tree(Tree->left);
+        delete_tree(Tree->right);
+        delete Tree;
     }
+
+public:
+    BinaryTree():root(nullptr){}
+
     BinaryTree(const BinaryTree<Data>& OtherTree)
     {
-        if(OtherTree.root == NULL)
-        {
-            root = NULL;
-        }
-        else
+        if(OtherTree.root != nullptr)
         {
             CopyTree(root , OtherTree.root);
         }
     }
+
     void InOrder() const
     {
         u_inorder(root);
         std::cout << std::endl;
     }
+
     void PostOrder() const
     {
         u_postorder(root);
         std::cout << std::endl;
     }
+
     void PreOrder() const
     {
         u_preorder(root);
         std::cout << std::endl;
     }
+
     void Insert(Data UserData)
     {
         u_insert(UserData);
     }
-    int Height() const
-    {
-        return u_height(root);
-    }
+    
     void Insert(Data* arr, size_t size)
     {
         for(size_t i = 0; i < size; i++)
@@ -159,6 +180,16 @@ public:
         {
             u_insert(*i);
         }
+    }
+
+    BinarytreeNode<Data>* Search(const Data& Key)
+    {
+        return u_search(Key);     
+    }
+
+    int Height() const
+    {
+        return u_height(root);
     }
 
     bool isEmpty() const
@@ -183,7 +214,7 @@ public:
    
     ~BinaryTree()
     {
-        delete root;
+        delete_tree(root);
     }
 
 
